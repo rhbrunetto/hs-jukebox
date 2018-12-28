@@ -127,7 +127,7 @@ class ItemListWidget extends StatefulWidget{
 class _ItemListWidgetState extends State<ItemListWidget>{
   List<Item> items;
   Timer events;
-  final int interval_sec = 5;
+  final int interval_sec = 10;
 
   void initState(){
     super.initState();
@@ -141,7 +141,7 @@ class _ItemListWidgetState extends State<ItemListWidget>{
       final list = (json.decode(response.body) as List)
           .map((data) => new Item.fromJson(data))
           .toList();
-      print('HEEEEEEY!!');
+      print('[Fetched items from API]');
       setState(() => items = list);
     }
   }
