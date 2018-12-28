@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 
-
 class ItemWidget extends StatefulWidget{
   final Item item;
 
@@ -82,7 +81,7 @@ class _ItemWidgetState extends State<ItemWidget>{
                 child: Padding(
                   padding: const EdgeInsets.only(right: 8.0),
                   child: Text(
-                    widget.item.formatted_duration ?? '--:--',
+                    widget.item.duration ?? '--:--',
                     style: Theme.of(context).textTheme.subtitle,
                   )
                 ),
@@ -120,6 +119,7 @@ class _ItemWidgetState extends State<ItemWidget>{
 
 
 class ItemListWidget extends StatefulWidget{
+
   @override
   _ItemListWidgetState createState() => _ItemListWidgetState();
 }
@@ -135,8 +135,13 @@ class _ItemListWidgetState extends State<ItemListWidget>{
     events = new Timer.periodic(Duration(seconds: interval_sec), (Timer t) => fetch_items());
   }
 
+  void dispose(){
+    super.dispose();
+    events.cancel();
+  }
+
   void fetch_items() async{
-    final response = await http.get("http://192.168.0.10:3000/api/items");
+    final response = await http.get("http://192.168.15.85:3000/api/items");
     if (response.statusCode == 200) {
       final list = (json.decode(response.body) as List)
           .map((data) => new Item.fromJson(data))
@@ -148,15 +153,14 @@ class _ItemListWidgetState extends State<ItemListWidget>{
 
   @override
   Widget build(BuildContext context){
-    return
-    items == null ?
-    CircularProgressIndicator()
-    :
-    ListView.builder(
-      itemCount: items.length,
-      itemBuilder: (context, index){
-        return ItemWidget(item: items[index]);
-      }
-    );
+    return items == null ?
+      CircularProgressIndicator()
+      :
+      ListView.builder(
+        itemCount: items.length,
+        itemBuilder: (context, index){
+          return ItemWidget(item: items[index]);
+        }
+      );
   } 
 }

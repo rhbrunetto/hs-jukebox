@@ -27,20 +27,16 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
+  
   Future _search_youtube() async{
     await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (BuildContext context){
-          return PreviewItemList();
-        }
-      )
+        builder: (context) => PreviewItemList())
     );
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),

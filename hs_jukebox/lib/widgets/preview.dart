@@ -28,8 +28,9 @@ class _PreviewItemWidgetState extends State<PreviewItemWidget>{
           uploading = true;
         });
     try{
-      final response = await http.post('http://192.168.0.10:3000/api/items', body: widget.item.videoUrl);
-      if (response.statusCode == 200) {
+      print(widget.item.videoUrl);
+      final response = await http.post('http://192.168.15.85:3000/api/items/enqueue', body: widget.item.videoUrl);
+      if (response.statusCode == 204) {
         Navigator.of(context).pop();
         return;
       }
