@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'widgets/item.dart';
 import 'widgets/preview.dart';
 
@@ -27,12 +28,15 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  
+  final StreamController<int> _controller = StreamController<int>();
+
+
   Future _search_youtube() async{
     await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => PreviewItemList())
     );
+    _controller.add(0);
   }
 
   @override
@@ -49,7 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Center(
         // child: ItemWidget(item: i),
-        child: ItemListWidget(),
+        child: ItemListWidget(stream: _controller.stream),
         )
     );
   }

@@ -119,6 +119,9 @@ class _ItemWidgetState extends State<ItemWidget>{
 
 
 class ItemListWidget extends StatefulWidget{
+  Stream<int> stream;
+  // Stream is required to keep notifications
+  ItemListWidget({@required this.stream});
 
   @override
   _ItemListWidgetState createState() => _ItemListWidgetState();
@@ -133,6 +136,10 @@ class _ItemListWidgetState extends State<ItemListWidget>{
     super.initState();
     fetch_items();
     events = new Timer.periodic(Duration(seconds: interval_sec), (Timer t) => fetch_items());
+    widget.stream.listen((number) {
+      print("Fetching after request from stream");
+      fetch_items();
+    });
   }
 
   void dispose(){
@@ -141,13 +148,22 @@ class _ItemListWidgetState extends State<ItemListWidget>{
   }
 
   void fetch_items() async{
-    final response = await http.get("http://192.168.15.85:3000/api/items");
-    if (response.statusCode == 200) {
-      final list = (json.decode(response.body) as List)
-          .map((data) => new Item.fromJson(data))
-          .toList();
-      print('[Fetched items from API]');
-      setState(() => items = list);
+    try{
+      final response = await http.get("http://192.168.0.10:3000/api/items");
+      if (response.statusCode == 200) {
+        final list = (json.decode(response.body) as List)
+            .map((data) => new Item.fromJson(data))
+            .toList();
+        print('[Fetched items from API]');
+        setState(() => items = list);
+      }
+    }catch(Exception){
+      Scaffold.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.redAccent,
+          content: Text('Erro ao buscar músicas :(')
+        )
+      );
     }
   }
 
