@@ -8,6 +8,7 @@ class PreviewItem{
   }
 
   factory PreviewItem.fromJson(Map<String, dynamic> json){
+    if (!json.containsKey('id') || !json.containsKey('snippet')) return null;
     return new PreviewItem(
       videoId: json['id']['videoId'],
       title: json['snippet']['title'],

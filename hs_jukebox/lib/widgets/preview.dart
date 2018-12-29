@@ -171,47 +171,34 @@ class PreviewItemList extends StatefulWidget{
 class _PreviewItemListState extends State<PreviewItemList>{
   final TextEditingController query_controller = new TextEditingController();
   List<PreviewItem> items;
-  String query;
   
   Icon _searchIcon = new Icon(Icons.search); 
   Widget _appBarTitle = new Text('Search on Youtube');
 
-
-  _PreviewItemListState(){
-    query_controller.addListener(() {
-      if (query_controller.text.isEmpty) {
-        setState(() {
-          query = null;
-          items = null;
-        });
-      } else if (query == null || query_controller.text == null || (query.length - query_controller.text.length).abs() > 2){
-        setState(() {
-          query = query_controller.text;
-          search();
-        });
-      }
-    });
-  }
-
   void search() async{
-    if (query == null) return;
+    if (query_controller.text.isEmpty) return;
     final uri = new Uri.https('www.googleapis.com', '/youtube/v3/search',
       { "part":"snippet",
-        "maxResults":"5",
-        "q":query,
+        "maxResults":"10",
+        "q":query_controller.text,
         "key":KEY,
       }
     );
     final s = uri.toString() + "&fields=items(id%2FvideoId%2Csnippet(channelTitle%2Cthumbnails%2Fdefault%2Furl%2Ctitle))";
     print(s);
-    final response = await http.get(s);
-    if (response.statusCode == 200) {
-      print(response.body);
-      final obj = json.decode(response.body);
-      final list = (obj['items'] as List)
-          .map((data) => new PreviewItem.fromJson(data))
-          .toList();
-      setState(() => items = list);
+    try{
+      final response = await http.get(s);
+      if (response.statusCode == 200) {
+        final obj = json.decode(response.body);
+        final list = (obj['items'] as List)
+            .map((data) => new PreviewItem.fromJson(data))
+            .where((data) => data != null)
+            .toList();
+        setState(() => items = list);
+      }
+    }catch(e){
+      print(e);
+      print('Failed on search');
     }
   }
 
@@ -237,7 +224,13 @@ class _PreviewItemListState extends State<PreviewItemList>{
             prefixIcon: Icon(Icons.search),
             hintText: 'Search on Youtube'
           ),
-        )
+        ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.done),
+            onPressed: search,
+          )
+        ],
       ),
       body: list
     );
