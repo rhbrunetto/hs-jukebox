@@ -219,6 +219,9 @@ class _PreviewItemListState extends State<PreviewItemList>{
     return Scaffold(
       appBar: AppBar(
         title: TextField(
+          onSubmitted: (str){
+            search();
+          },
           controller: query_controller,
           decoration: InputDecoration(
             prefixIcon: Icon(Icons.search),
