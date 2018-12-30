@@ -127,11 +127,14 @@ class ItemListWidget extends StatefulWidget{
 }
 
 class _ItemListWidgetState extends State<ItemListWidget>{
+  
+  final int interval_sec = 10;
+
   Item item_nowPlaying;
   List<Item> items;
   Timer events;
-  final int interval_sec = 10;
 
+  @override
   void initState(){
     super.initState();
     generate_list();
@@ -142,6 +145,7 @@ class _ItemListWidgetState extends State<ItemListWidget>{
     });
   }
 
+  @override
   void dispose(){
     super.dispose();
     events.cancel();

@@ -38,5 +38,9 @@
   "item": {
     "dataSource": "db",
     "public": true
+  },
+  "users_online": {
+    "dataSource": "db",
+    "public": true
   }
 }

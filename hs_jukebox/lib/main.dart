@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'widgets/item.dart';
+
 import 'repositories/item.dart';
-import 'widgets/dialog_input.dart';
+
+import 'widgets/item.dart';
 import 'widgets/preview.dart';
+import 'widgets/dialog_input.dart';
+import 'widgets/user_icon.dart';
 
 void main() => runApp(MyApp());
 
@@ -48,16 +51,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future _submit_url(String url) async{
     bool success = await enqueue(url);
-    if (success){
-      refresh_playlist();
-    }else{
-      _scaffoldKey.currentState.showSnackBar(
-        SnackBar(
-          backgroundColor: Colors.redAccent,
-          content: Text('Erro ao adicionar à playlist :(')
-        )
-      );
-    }
+    if (success) refresh_playlist();
+    else show_snack('Erro ao adicionar à playlist :(');
   }
 
   Future _put_url() async {
@@ -78,6 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
         actions: <Widget>[
+          UsersOnlineWidget(),
           IconButton(
             icon: Icon(Icons.search),
             onPressed: _search_youtube            
@@ -100,11 +96,20 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[          
-            IconButton(icon: Icon(Icons.add), onPressed: () {}, color: Colors.white),
-            IconButton(icon: Icon(Icons.remove), onPressed: () {}, color: Colors.white),
+            IconButton(icon: Icon(Icons.volume_down), onPressed: () {}, color: Colors.white),
+            IconButton(icon: Icon(Icons.volume_up), onPressed: () {}, color: Colors.white),
           ],
         ),
       ),
     );
   }
+}
+
+void show_snack(String text){
+  _scaffoldKey.currentState.showSnackBar(
+    SnackBar(
+      backgroundColor: Colors.redAccent,
+      content: Text(text)
+    )
+  );
 }
