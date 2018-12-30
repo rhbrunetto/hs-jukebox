@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'widgets/item.dart';
 import 'widgets/preview.dart';
+import 'widgets/diamond_shape.dart';
 
 void main() => runApp(MyApp());
 
@@ -52,9 +53,35 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       body: Center(
-        // child: ItemWidget(item: i),
         child: ItemListWidget(stream: _controller.stream),
-        )
+      ),
+      floatingActionButton: 
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          Transform.scale(
+            scale: 0.7,
+            child: FloatingActionButton(
+              shape: DiamondBorder(up: true),
+              onPressed: () => print('oi'),
+              child: Icon(Icons.add),
+            )
+          ),
+          Transform.scale(
+            scale: 0.7,
+            child: FloatingActionButton(
+              shape: DiamondBorder(up: false),
+              onPressed: () => print('oi'),
+              child: Icon(Icons.remove),
+            )
+          ),
+          FloatingActionButton(
+            onPressed: () => print('oi'),
+            child: Icon(Icons.queue_music),
+          )
+        ]
+      )
     );
   }
 }
