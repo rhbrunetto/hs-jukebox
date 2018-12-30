@@ -1,8 +1,7 @@
 import '../models/item.dart';
-import 'dart:convert';
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import '../repositories/item.dart';
 
 
 class ItemWidget extends StatefulWidget{
@@ -135,11 +134,11 @@ class _ItemListWidgetState extends State<ItemListWidget>{
 
   void initState(){
     super.initState();
-    fetch_items();
-    events = new Timer.periodic(Duration(seconds: interval_sec), (Timer t) => fetch_items());
+    generate_list();
+    events = new Timer.periodic(Duration(seconds: interval_sec), (Timer t) => generate_list());
     widget.stream.listen((number) {
       print("Fetching after request from stream");
-      fetch_items();
+      generate_list();
     });
   }
 
@@ -148,27 +147,22 @@ class _ItemListWidgetState extends State<ItemListWidget>{
     events.cancel();
   }
 
-  void fetch_items() async{
-    try{
-      final response = await http.get("http://192.168.0.10:3000/api/items");
-      if (response.statusCode == 200) {
-        final list = (json.decode(response.body) as List)
-            .map((data) => new Item.fromJson(data))
-            .toList();
-        print('[Fetched items from API]');
-        setState((){
-          item_nowPlaying = list.length > 0 ? list.removeAt(0) : null;
-          items = list.length > 0 ? list : null;
-        });
-      }
-    }catch(Exception){
-      Scaffold.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: Colors.redAccent,
-          content: Text('Erro ao buscar músicas :(')
-        )
-      );
+  void generate_list() async{
+    final list = await fetch_items();
+    if (list!=null){
+      setState((){
+        item_nowPlaying = list.length > 0 ? list.removeAt(0) : null;
+        items = list.length > 0 ? list : null;
+      });
     }
+    // }else{
+    //   Scaffold.of(context).showSnackBar(
+    //     SnackBar(
+    //       backgroundColor: Colors.redAccent,
+    //       content: Text('Erro ao atualizar fila :(')
+    //     )
+    //   );    
+    // }
   }
 
   Widget generic_title(String title, Widget content){

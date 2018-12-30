@@ -1,9 +1,7 @@
 import '../models/preview.dart';
-import 'dart:convert';
+import '../repositories/item.dart';
+import '../repositories/preview.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-
-final String KEY = "AIzaSyBNw1HoJNlAIzgy67_XKrNaXusJkrQE33U";
 
 class PreviewItemWidget extends StatefulWidget{
   final PreviewItem item;
@@ -29,12 +27,7 @@ class _PreviewItemWidgetState extends State<PreviewItemWidget>{
     if (success){
       Navigator.of(context).pop();
     }else{
-      Scaffold.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: Colors.redAccent,
-          content: Text('Erro ao adicionar à playlist :(')
-        )
-      );
+      show_snack(context, 'Erro ao adicionar à playlist :(');
     }
 
     setState(() => uploading = false);
@@ -171,28 +164,11 @@ class _PreviewItemListState extends State<PreviewItemList>{
 
   void search() async{
     if (query_controller.text.isEmpty) return;
-    final uri = new Uri.https('www.googleapis.com', '/youtube/v3/search',
-      { "part":"snippet",
-        "maxResults":"10",
-        "q":query_controller.text,
-        "key":KEY,
-      }
-    );
-    final s = uri.toString() + "&fields=items(id%2FvideoId%2Csnippet(channelTitle%2Cthumbnails%2Fdefault%2Furl%2Ctitle))";
-    print(s);
-    try{
-      final response = await http.get(s);
-      if (response.statusCode == 200) {
-        final obj = json.decode(response.body);
-        final list = (obj['items'] as List)
-            .map((data) => new PreviewItem.fromJson(data))
-            .where((data) => data != null)
-            .toList();
-        setState(() => items = list);
-      }
-    }catch(e){
-      print(e);
-      print('Failed on search');
+    final list = await search_on_youtube(query_controller.text);
+    if (list != null)
+      setState(() => items = list);
+    else{
+      show_snack(context, 'Erro ao buscar músicas :(');      
     }
   }
 
@@ -234,13 +210,11 @@ class _PreviewItemListState extends State<PreviewItemList>{
   } 
 }
 
-
-Future<bool> enqueue(String url) async{
-  try{
-    final response = await http.post('http://192.168.0.10:3000/api/items/enqueue', body: url);
-    if (response.statusCode == 204) return true;
-    return false;
-  }catch(Exception){
-    return false;
-  }
+void show_snack(BuildContext context, String text){
+  Scaffold.of(context).showSnackBar(
+    SnackBar(
+      backgroundColor: Colors.redAccent,
+      content: Text(text)
+    )
+  );
 }
