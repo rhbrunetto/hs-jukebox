@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-
 final String KEY = "AIzaSyBNw1HoJNlAIzgy67_XKrNaXusJkrQE33U";
 
 class PreviewItemWidget extends StatefulWidget{
@@ -24,26 +23,21 @@ class _PreviewItemWidgetState extends State<PreviewItemWidget>{
   bool uploading = false;
 
   void add_video() async{
-    setState(() {
-          uploading = true;
-        });
-    try{
-      print(widget.item.videoUrl);
-      final response = await http.post('http://192.168.0.10:3000/api/items/enqueue', body: widget.item.videoUrl);
-      if (response.statusCode == 204) {
-        Navigator.of(context).pop();
-        return;
-      }
-    }catch(Exception){}
-    Scaffold.of(context).showSnackBar(
-      SnackBar(
-        backgroundColor: Colors.redAccent,
-        content: Text('Erro ao adicionar à playlist :(')
-      )
-    );
-    setState(() {
-      uploading = false;
-    });
+    setState(() => uploading = true);
+
+    bool success = await enqueue(widget.item.videoUrl);
+    if (success){
+      Navigator.of(context).pop();
+    }else{
+      Scaffold.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.redAccent,
+          content: Text('Erro ao adicionar à playlist :(')
+        )
+      );
+    }
+
+    setState(() => uploading = false);
   }
 
   Widget get thumbImage{
@@ -238,4 +232,15 @@ class _PreviewItemListState extends State<PreviewItemList>{
       body: list
     );
   } 
+}
+
+
+Future<bool> enqueue(String url) async{
+  try{
+    final response = await http.post('http://192.168.0.10:3000/api/items/enqueue', body: url);
+    if (response.statusCode == 204) return true;
+    return false;
+  }catch(Exception){
+    return false;
+  }
 }
