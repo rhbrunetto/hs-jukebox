@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 class ItemWidget extends StatefulWidget{
   final Item item;
 
-  ItemWidget({this.item});
+  ItemWidget({@required this.item});
 
   @override
   _ItemWidgetState createState() => _ItemWidgetState();
@@ -128,6 +128,7 @@ class ItemListWidget extends StatefulWidget{
 }
 
 class _ItemListWidgetState extends State<ItemListWidget>{
+  Item item_nowPlaying;
   List<Item> items;
   Timer events;
   final int interval_sec = 10;
@@ -155,7 +156,10 @@ class _ItemListWidgetState extends State<ItemListWidget>{
             .map((data) => new Item.fromJson(data))
             .toList();
         print('[Fetched items from API]');
-        setState(() => items = list);
+        setState((){
+          item_nowPlaying = list.length > 0 ? list.removeAt(0) : null;
+          items = list.length > 0 ? list : null;
+        });
       }
     }catch(Exception){
       Scaffold.of(context).showSnackBar(
@@ -167,16 +171,57 @@ class _ItemListWidgetState extends State<ItemListWidget>{
     }
   }
 
+  Widget generic_title(String title, Widget content){
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.all(5),
+          child: Text(
+            title,
+            style: Theme.of(context).textTheme.title
+          )
+        ),
+        content,
+      ]
+    );
+  }
+
+  Widget get nowPlaying{
+    return generic_title(
+      'Now playing',
+      ItemWidget(
+        item: item_nowPlaying
+      )
+    );
+  }
+
+  Widget get playlist{
+    return generic_title(
+      'Playlist',
+      Flexible(
+        child: ListView.builder(
+          itemCount: items.length,
+          itemBuilder: (context, index){
+            return ItemWidget(item: items[index]);
+          }
+        )
+      )
+    );
+  }
+
   @override
   Widget build(BuildContext context){
-    return items == null ?
+    return item_nowPlaying == null ?
       CircularProgressIndicator()
       :
-      ListView.builder(
-        itemCount: items.length,
-        itemBuilder: (context, index){
-          return ItemWidget(item: items[index]);
-        }
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          nowPlaying,
+          Divider(),
+          Flexible( child: playlist )
+        ],
       );
   } 
 }
