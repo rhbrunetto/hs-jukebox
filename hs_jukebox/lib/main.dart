@@ -44,8 +44,13 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState(){
     super.initState();
-    identify();
+    first_login();
     events = new Timer.periodic(Duration(seconds: interval_sec_refresh_token), (Timer t) => refreshToken());
+  }
+
+  void first_login() async{
+    final success = await identify();
+    if(!success) show_snack('Falha na autenticação!');
   }
 
   @override

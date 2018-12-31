@@ -177,7 +177,12 @@ class _ItemListWidgetState extends State<ItemListWidget>{
           padding: EdgeInsets.all(5),
           child: Text(
             title,
-            style: Theme.of(context).textTheme.title
+            style: TextStyle(
+              color: Colors.purple,
+              fontWeight: FontWeight.w500,
+              fontSize: 20.0
+              // shadows: [Shadow(color: Colors.purple, blurRadius: 10.0)]
+            )
           )
         ),
         content,
@@ -187,7 +192,7 @@ class _ItemListWidgetState extends State<ItemListWidget>{
 
   Widget get nowPlaying{
     return generic_title(
-      'Now playing',
+      'Now playing ♪',
       ItemWidget(
         item: item_nowPlaying
       )
