@@ -1,6 +1,27 @@
 # hs_jukebox
 
-A new Flutter project.
+This project aims to develop a hybrid app to a jukebox controller for Hackerspace Maringá,
+based on their [API](https://github.com/HackerSpaceMaringa/jukebox).
+
+This is not a professional project.
+
+A simple demo can be found below:
+
+![Alt Text](demo.gif)
+
+## Features
+
+This app should:
+
+- Allow user to insert a new music URL;
+- Allow user to search for / insert a music from Youtube;
+- Allow user to control volume;
+- Show current count of online users;
+- Show music and playlist currently playing.
+
+# Contributors
+
+- Ricardo Henrique Brunetto
 
 ## Getting Started
 
