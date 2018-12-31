@@ -7,7 +7,7 @@ This is not a professional project.
 
 A simple demo can be found below:
 
-![Alt Text](demo.gif)
+![Alt Text](https://media.giphy.com/media/LYtB7TO6cdm4GcdWiY/giphy.gif)
 
 ## Features
 
