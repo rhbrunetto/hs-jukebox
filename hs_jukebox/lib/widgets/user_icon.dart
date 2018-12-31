@@ -45,7 +45,6 @@ class _UsersOnlineWidgetState extends State<UsersOnlineWidget>{
             Icons.brightness_1,
             color: Colors.purple,
             size: 12.0,
-            // color: const Color(0xFF2845E7),
           ),
           Text(
             count.toString(),
@@ -62,9 +61,6 @@ class _UsersOnlineWidgetState extends State<UsersOnlineWidget>{
 
   @override
   Widget build(BuildContext context) {
-      // alignment: Alignment.center,
-      // children: <Widget>[
-        // Icon(Icons.people),
     return IconButton(
       icon: Stack(
         children: <Widget>[

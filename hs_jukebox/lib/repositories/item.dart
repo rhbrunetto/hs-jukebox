@@ -5,8 +5,9 @@ import 'dart:convert';
 
 Future<bool> enqueue(String url) async{
   try{
-    final response = await http.post(ENDPOINT_ENQUEUE, body: url);
-    if (response.statusCode == 204) return true;
+    final jsonObj = json.encode({'url': url});
+    final response = await http.post(ENDPOINT_ENQUEUE, body: jsonObj);
+    if (response.statusCode == 200) return true;
     return false;
   }catch(e){
     print(e);

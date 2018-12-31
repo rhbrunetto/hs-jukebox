@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'repositories/item.dart';
+import 'repositories/volume.dart';
+import 'repositories/auth.dart';
 
 import 'widgets/item.dart';
 import 'widgets/preview.dart';
@@ -36,6 +38,21 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final StreamController<int> _controller = StreamController<int>();
+  Timer events;
+  final int interval_sec_refresh_token = 180;
+
+  @override
+  void initState(){
+    super.initState();
+    identify();
+    events = new Timer.periodic(Duration(seconds: interval_sec_refresh_token), (Timer t) => refreshToken());
+  }
+
+  @override
+  void dispose(){
+    super.dispose();
+    events.cancel();
+  }
 
   void refresh_playlist(){
     _controller.add(0);
@@ -64,6 +81,11 @@ class _MyHomePageState extends State<MyHomePage> {
       print(newurl);
       _submit_url(newurl);
     }
+  }
+
+  void change_volume(bool up) async{
+    bool success = await set_volume(up);
+    if(!success) show_snack('Erro ao alterar o volume :(');
   }
 
   @override
@@ -96,8 +118,8 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[          
-            IconButton(icon: Icon(Icons.volume_down), onPressed: () {}, color: Colors.white),
-            IconButton(icon: Icon(Icons.volume_up), onPressed: () {}, color: Colors.white),
+            IconButton(icon: Icon(Icons.volume_down), onPressed: () => change_volume(false), color: Colors.white),
+            IconButton(icon: Icon(Icons.volume_up), onPressed: () => change_volume(true), color: Colors.white),
           ],
         ),
       ),
