@@ -89,6 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void change_volume(bool up) async{
+    print("OLAAAAAAAAAAR");
     bool success = await set_volume(up);
     if(!success) show_snack('Erro ao alterar o volume :(');
   }

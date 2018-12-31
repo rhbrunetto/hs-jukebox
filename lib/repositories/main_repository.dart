@@ -1,6 +1,6 @@
-final String API_URL = 'http://192.168.0.10:3000/api';
+final String API_URL = 'http://192.168.0.10:3000';
 
-final String ENDPOINT_ITEMS   = '${API_URL}/items';
+final String ENDPOINT_ITEMS   = '${API_URL}/playlist';
 final String ENDPOINT_ENQUEUE = '${API_URL}/enqueue';
 final String ENDPOINT_VOLUME  = '${API_URL}/volume';
 final String ENDPOINT_IDENTIFY= '${API_URL}/identify';

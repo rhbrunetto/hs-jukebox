@@ -25,17 +25,17 @@ class AuthSingleton {
 
 Future<bool> refreshToken() async{
   try{
-    final jsonObj = json.encode({'token' : AuthSingleton().token});
+    final jsonObj = {'token' : AuthSingleton().token};
     final response = await http.post(ENDPOINT_IDENTIFY, body: jsonObj);
     if (response.statusCode == 200) return true;
+    if (response.statusCode == 401) return identify();
   }catch(e){ print(e); }
   return false;
 }
 
 Future<bool> identify() async{
   try{
-    final jsonObj = json.encode({'token': 'undefined'});
-    final response = await http.post(ENDPOINT_IDENTIFY, body: jsonObj);
+    final response = await http.post(ENDPOINT_IDENTIFY);
     if (response.statusCode == 200){
       AuthSingleton().token  = json.decode(response.body)['token'];
       return true;

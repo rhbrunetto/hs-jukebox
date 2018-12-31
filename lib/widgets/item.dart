@@ -156,17 +156,9 @@ class _ItemListWidgetState extends State<ItemListWidget>{
     if (list!=null){
       setState((){
         item_nowPlaying = list.length > 0 ? list.removeAt(0) : null;
-        items = list.length > 0 ? list : null;
+        items = list;
       });
     }
-    // }else{
-    //   Scaffold.of(context).showSnackBar(
-    //     SnackBar(
-    //       backgroundColor: Colors.redAccent,
-    //       content: Text('Erro ao atualizar fila :(')
-    //     )
-    //   );    
-    // }
   }
 
   Widget generic_title(String title, Widget content){
@@ -213,10 +205,31 @@ class _ItemListWidgetState extends State<ItemListWidget>{
     );
   }
 
+  Widget get emptyList{
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment:  MainAxisAlignment.center,
+      children: <Widget>[
+        Transform.scale(
+          scale: 2.0,
+          alignment: Alignment.bottomCenter,
+          child: Icon(Icons.sentiment_dissatisfied, color: Colors.purple,)
+        ),
+        Text(
+          'Parece que sua playlist está vazia!', style: TextStyle(
+            fontSize: 12.0,
+            fontWeight: FontWeight.normal,
+            color: Colors.purple
+          ),
+        )
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context){
     return item_nowPlaying == null ?
-      CircularProgressIndicator()
+      emptyList
       :
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,

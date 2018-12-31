@@ -7,6 +7,7 @@ final int DELTA_VOLUME = 10;
 Future<String> get_volume() async{
   try{
     final response = await http.get(ENDPOINT_VOLUME);
+    // print('VOLUMEEE '  + response.body);
     if (response.statusCode == 200) return json.decode(response.body)['volume'];
   }catch(e){ print(e); }
   return null;
@@ -14,6 +15,7 @@ Future<String> get_volume() async{
 
 Future<bool> set_volume(bool up) async {
   final vol_req = await get_volume();
+  print(vol_req);
   if (vol_req == null) return false;
 
   final actual_volume = int.parse(vol_req);
@@ -25,8 +27,11 @@ Future<bool> set_volume(bool up) async {
   final json_obj = json.encode({'volume' : future_volume});
 
   try{
-    final response = await http.post(ENDPOINT_VOLUME, body: json_obj);
-    if (response.statusCode == 200) return true;      
+    final response = await http.post(ENDPOINT_VOLUME, body: json_obj, headers: {
+      "content-type" : "application/json",
+      "accept" : "application/json",
+    });
+    if (response.statusCode == 204) return true;      
   }catch(e){ print(e); }
-  return null;
+  return false;
 }
