@@ -13,6 +13,8 @@ class AuthSingleton {
 
   set token(String tok) => _singleton._token = tok;
   String get token => _singleton._token;
+  
+  set invalidate() => _singleton._token = null;
 
   Map<String, dynamic> authorize(Map<String, dynamic> json){
     if (_singleton.token == null) return json;
