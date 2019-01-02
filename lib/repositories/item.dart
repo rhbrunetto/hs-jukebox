@@ -1,13 +1,18 @@
 import 'package:http/http.dart' as http;
 import '../models/item.dart';
 import 'main_repository.dart';
+import 'auth.dart';
 import 'dart:convert';
 
 Future<bool> enqueue(String url) async{
   try{
     final jsonObj = {'url': url};
-    final response = await http.post(ENDPOINT_ENQUEUE, body: jsonObj);
+    final response = await http.post(ENDPOINT_ENQUEUE, body: (new AuthSingleton()).authorize(jsonObj));
     if (response.statusCode == 200) return true;
+    if (response.statusCode == 401) {
+      (new AuthSingleton()).invalidate();
+      return false;
+    }
     return false;
   }catch(e){
     print(e);
