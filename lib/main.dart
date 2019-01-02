@@ -19,11 +19,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'HSJuke',
+      title: 'Hackerspace Maringa Jukebox',
       theme: ThemeData(
+        brightness: Brightness.dark,
         primarySwatch: Colors.purple,
       ),
-      home: MyHomePage(title: 'HS Jukebox'),
+      home: MyHomePage(title: 'Hackerspace Maringa Jukebox'),
     );
   }
 }
@@ -39,7 +40,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final StreamController<int> _controller = StreamController<int>();
   Timer events;
-  final int interval_sec_refresh_token = 180;
+  final int interval_sec_refresh_token = 60;
 
   @override
   void initState(){

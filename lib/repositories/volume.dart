@@ -1,5 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'main_repository.dart';
+import 'auth.dart';
 import 'dart:convert';
 
 final int DELTA_VOLUME = 10;
@@ -24,14 +25,18 @@ Future<bool> set_volume(bool up) async {
   if (up) future_volume = (actual_volume + DELTA_VOLUME) > 100 ? 100 : (actual_volume + DELTA_VOLUME);
   else future_volume = (actual_volume - DELTA_VOLUME) > 0 ? (actual_volume - DELTA_VOLUME) : 0;
 
-  final json_obj = json.encode({'volume' : future_volume});
+  final json_obj = json.encode((new AuthSingleton()).authorize({'volume' : future_volume}));
 
   try{
     final response = await http.post(ENDPOINT_VOLUME, body: json_obj, headers: {
       "content-type" : "application/json",
       "accept" : "application/json",
     });
-    if (response.statusCode == 204) return true;      
+    if (response.statusCode == 204) return true;
+    if (response.statusCode == 401) {
+      (new AuthSingleton()).invalidate();
+      return false;
+    }
   }catch(e){ print(e); }
   return false;
 }
